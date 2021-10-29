@@ -1,9 +1,10 @@
-package nesty.anzhy.exchangeapp
+package nesty.anzhy.exchangeapp.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import dagger.hilt.android.AndroidEntryPoint
+import nesty.anzhy.exchangeapp.R
 import nesty.anzhy.exchangeapp.databinding.ActivityMainBinding
 
 @AndroidEntryPoint

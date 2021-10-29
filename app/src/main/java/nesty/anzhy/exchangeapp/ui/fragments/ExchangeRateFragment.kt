@@ -1,4 +1,4 @@
-package nesty.anzhy.exchangeapp
+package nesty.anzhy.exchangeapp.ui.fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import nesty.anzhy.exchangeapp.adapters.CurrencyAdapter
 import nesty.anzhy.exchangeapp.data.database.entities.ExchangeEntity
-import nesty.anzhy.exchangeapp.databinding.FragmentFirstBinding
+import nesty.anzhy.exchangeapp.databinding.FragmentExchangeRateBinding
 import nesty.anzhy.exchangeapp.models.Currency
 import nesty.anzhy.exchangeapp.utils.*
 import nesty.anzhy.exchangeapp.utils.Constants.Companion.APIKEY
@@ -25,14 +25,14 @@ import java.util.*
 import kotlin.collections.HashMap
 
 @AndroidEntryPoint
-class FirstFragment : Fragment() {
+class ExchangeRateFragment : Fragment() {
 
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentExchangeRateBinding? = null
     private val binding get() = _binding!!
     private lateinit var networkListener: NetworkListener
 
     private lateinit var mainViewModel: MainViewModel
-    private val mAdapter: CurrencyAdapter by lazy { CurrencyAdapter(this@FirstFragment) }
+    private val mAdapter: CurrencyAdapter by lazy { CurrencyAdapter(this@ExchangeRateFragment) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,7 +40,7 @@ class FirstFragment : Fragment() {
     ): View {
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
 
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentExchangeRateBinding.inflate(inflater, container, false)
 
         lifecycleScope.launchWhenStarted {
             networkListener = NetworkListener()

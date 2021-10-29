@@ -1,4 +1,4 @@
-package nesty.anzhy.exchangeapp
+package nesty.anzhy.exchangeapp.ui.fragments
 
 import android.graphics.Color
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +16,7 @@ import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import dagger.hilt.android.AndroidEntryPoint
+import nesty.anzhy.exchangeapp.R
 import nesty.anzhy.exchangeapp.databinding.FragmentDetailBinding
 import nesty.anzhy.exchangeapp.utils.*
 import nesty.anzhy.exchangeapp.utils.Constants.Companion.BASE_CURRENCY
@@ -97,7 +97,9 @@ class DetailFragment : Fragment() {
         binding.ratesChart.xAxis.textColor = Color.WHITE
         binding.ratesChart.xAxis.labelRotationAngle = -45f
         binding.ratesChart.xAxis.labelCount = 5
-        binding.ratesChart.legend.textColor = ContextCompat.getColor(requireContext(), R.color.purple_200)
+        binding.ratesChart.legend.textColor = ContextCompat.getColor(requireContext(),
+            R.color.purple_200
+        )
     }
 
     private fun showHistoryRatesChart(map: HashMap<String, HashMap<String, Double>>) {

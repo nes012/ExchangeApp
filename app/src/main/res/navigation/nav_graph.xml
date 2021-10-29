@@ -3,24 +3,24 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/exchangeRateFragment">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="nesty.anzhy.exchangeapp.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        android:id="@+id/exchangeRateFragment"
+        android:name="nesty.anzhy.exchangeapp.ui.fragments.ExchangeRateFragment"
+        android:label="Exchange Rate Fragment"
+        tools:layout="@layout/fragment_exchange_rate">
         <action
-            android:id="@+id/action_FirstFragment_to_DetailFragment"
-            app:destination="@id/DetailFragment" />
+            android:id="@+id/action_exchangeRateFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
     </fragment>
     <fragment
-        android:id="@+id/DetailFragment"
-        android:name="nesty.anzhy.exchangeapp.DetailFragment"
+        android:id="@+id/detailFragment"
+        android:name="nesty.anzhy.exchangeapp.ui.fragments.DetailFragment"
         android:label="Detail exchange rate"
         tools:layout="@layout/fragment_detail">
         <action
-            android:id="@+id/action_DetailFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_detailFragment_to_exchangeRateFragment"
+            app:destination="@id/exchangeRateFragment" />
     </fragment>
 </navigation>

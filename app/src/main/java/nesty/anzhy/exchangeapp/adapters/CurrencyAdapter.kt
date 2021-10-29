@@ -38,7 +38,7 @@ class CurrencyAdapter(
             val bundle = Bundle()
             bundle.putString("CurrencyToShow", data.name)
             NavHostFragment.findNavController(fragment)
-                .navigate(R.id.action_FirstFragment_to_DetailFragment, bundle)
+                .navigate(R.id.action_exchangeRateFragment_to_detailFragment, bundle)
         }
     }
 
