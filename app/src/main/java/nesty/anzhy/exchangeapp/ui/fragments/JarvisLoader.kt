@@ -16,6 +16,6 @@ class JarvisLoader(context: Context) : Dialog(context) {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
-        window?.setBackgroundDrawableResource(R.color.white)
+        window?.setBackgroundDrawableResource(R.color.black)
     }
 }

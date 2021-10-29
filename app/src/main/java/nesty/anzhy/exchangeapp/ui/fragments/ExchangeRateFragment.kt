@@ -59,8 +59,6 @@ class ExchangeRateFragment : Fragment() {
 
         binding.fabRefreshData.setOnClickListener {
             val minutesDiff = differenceInMinutesBetweenTwoDateTime(mLastDataRetrievalTimestamp)
-            Log.e("CHECKDIFFF", minutesDiff.toString())
-            Log.e("CHECKDIFFF", mLastDataRetrievalTimestamp.toString())
 
             if (minutesDiff >= REFRESH_INTERVAL_MINUTES) {
                 requestApiData()
@@ -94,6 +92,7 @@ class ExchangeRateFragment : Fragment() {
                         setBaseCurrencyToView(baseCurrency)
 
                         val timestamp = data.timestamp?.toLong()!!
+                        mLastDataRetrievalTimestamp = timestamp
                         //set data to room library
                         mainViewModel.insertExchangeRate(
                             ExchangeEntity(
