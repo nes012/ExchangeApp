@@ -20,6 +20,7 @@ import nesty.anzhy.exchangeapp.models.Currency
 import nesty.anzhy.exchangeapp.utils.*
 import nesty.anzhy.exchangeapp.utils.Constants.Companion.APIKEY
 import nesty.anzhy.exchangeapp.utils.Constants.Companion.API_KEY
+import nesty.anzhy.exchangeapp.utils.Constants.Companion.REFRESH_INTERVAL_MINUTES
 import nesty.anzhy.exchangeapp.viewmodel.MainViewModel
 import java.util.*
 import kotlin.collections.HashMap
@@ -33,6 +34,9 @@ class ExchangeRateFragment : Fragment() {
 
     private lateinit var mainViewModel: MainViewModel
     private val mAdapter: CurrencyAdapter by lazy { CurrencyAdapter(this@ExchangeRateFragment) }
+
+    var mLastDataRetrievalTimestamp: Long = 0L
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,12 +53,24 @@ class ExchangeRateFragment : Fragment() {
                     Log.d("NetworkListener", status.toString())
                     mainViewModel.networkStatus = status
                     mainViewModel.showNetworkStatus()
-                    readDatabase()
+                    fetchCurrencyData()
                 }
         }
 
         binding.fabRefreshData.setOnClickListener {
-            readDatabase()
+            val minutesDiff = differenceInMinutesBetweenTwoDateTime(mLastDataRetrievalTimestamp)
+            Log.e("CHECKDIFFF", minutesDiff.toString())
+            Log.e("CHECKDIFFF", mLastDataRetrievalTimestamp.toString())
+
+            if (minutesDiff >= REFRESH_INTERVAL_MINUTES) {
+                requestApiData()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "There are no new data to show",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         setupRecyclerView()
@@ -68,16 +84,16 @@ class ExchangeRateFragment : Fragment() {
             when (response) {
                 is NetworkResult.Success -> {
                     response.data?.let {
-                        val data = response.data
+                        val data = response.data.query
                         Log.e("ApiRequestSuccess", data.toString())
-                        binding.txtLastUpdate.text = "Last update: "
-                        binding.txtTime.text =
-                            convertTimestampToTime(data.query?.timestamp?.toLong())
+                        binding.txtTime.text = convertTimestampToTime(data?.timestamp?.toLong())
                         val map = it.currency!!
                         //set data to our adapter
                         setDataToAdapter(map)
-                        val baseCurrency = data.query?.baseCurrency!!
-                        val timestamp = data.query.timestamp?.toLong()!!
+                        val baseCurrency = data?.baseCurrency!!
+                        setBaseCurrencyToView(baseCurrency)
+
+                        val timestamp = data.timestamp?.toLong()!!
                         //set data to room library
                         mainViewModel.insertExchangeRate(
                             ExchangeEntity(
@@ -110,34 +126,35 @@ class ExchangeRateFragment : Fragment() {
         mAdapter.setData(list)
     }
 
-    private fun readDatabase() {
+    private fun fetchCurrencyData() {
         mainViewModel.readExchangeRateFromDb.observeOnce(viewLifecycleOwner, { database ->
             if (database.isNotEmpty()) {
-                binding.txtTime.text = convertTimestampToTime(database.last().timestamp)
-                binding.txtBaseCurrency.text = "Base currency: " + database.last().baseCurrency
+                val timestamp = database.last().timestamp
+                mLastDataRetrievalTimestamp = timestamp
+
+                binding.txtTime.text = convertTimestampToTime(timestamp)
+                setBaseCurrencyToView(database.last().baseCurrency)
                 Log.e("ExchangeRate", "readDatabase called!")
                 val map = database.last().currency
                 //set data to adapter
                 setDataToAdapter(map)
-                checkIfTenMinutesPastToRetrieveNewData(database.last().timestamp)
+                checkRefreshIntervalPassed(timestamp)
             } else {
                 requestApiData()
             }
         })
     }
 
+    private fun setBaseCurrencyToView(baseCurrency: String) {
+        binding.txtBaseCurrency.text = "Base currency: $baseCurrency"
+    }
+
     //in this method we will check if 10 min past from the previous data.
-    private fun checkIfTenMinutesPastToRetrieveNewData(timestamp: Long) {
+    private fun checkRefreshIntervalPassed(timestamp: Long) {
         val minutesDiff = differenceInMinutesBetweenTwoDateTime(timestamp)
         Log.d("minutesDiff", "$minutesDiff min last from previous data")
-        if (minutesDiff >= 10) {
+        if (minutesDiff >= REFRESH_INTERVAL_MINUTES) {
             requestApiData()
-        } else {
-            Toast.makeText(
-                requireContext(),
-                "there are no new data to show",
-                Toast.LENGTH_SHORT
-            ).show()
         }
     }
 

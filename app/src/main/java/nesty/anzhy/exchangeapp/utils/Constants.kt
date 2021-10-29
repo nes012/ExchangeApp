@@ -14,5 +14,8 @@ class Constants {
         const val DATE_FROM = "date_from"
         const val DATE_TO = "date_to"
         const val BASE_CURRENCY = "base_currency"
+
+        //refresh data
+        const val REFRESH_INTERVAL_MINUTES = 10
     }
 }

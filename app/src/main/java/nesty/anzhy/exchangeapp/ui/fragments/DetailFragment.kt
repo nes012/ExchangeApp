@@ -42,6 +42,9 @@ class DetailFragment : Fragment() {
     ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
         mainViewModel = ViewModelProvider(requireActivity()).get(MainViewModel::class.java)
+        LoadingUtils.showDialog(context, true)
+
+
         currency = arguments?.get("CurrencyToShow").toString()
 
         val dateTo = convertTimestampToDateQuery(System.currentTimeMillis())
@@ -70,6 +73,9 @@ class DetailFragment : Fragment() {
                 }
                 is NetworkResult.Error -> {
                     Log.e("Error", response.message.toString())
+                    binding.txtLastWeek.visibility = View.INVISIBLE
+                    LoadingUtils.hideDialog()
+                    binding.ratesChart.visibility = View.VISIBLE
                 }
             }
         })
@@ -139,6 +145,8 @@ class DetailFragment : Fragment() {
         binding.ratesChart.description.isEnabled = false
         binding.ratesChart.axisRight.isEnabled = false
         binding.ratesChart.invalidate()
+        binding.ratesChart.visibility = View.VISIBLE
+        LoadingUtils.hideDialog()
     }
 
     private class XAxisValueFormatter(private val values: List<String>) : ValueFormatter() {
