@@ -13,6 +13,6 @@ interface ExchangeApi {
 
     @GET("historical")
     suspend fun getHistoricalRates(
-        @QueryMap queries: Map<String, String>
+        @QueryMap queries: Map<String, String>,
     ): Response<DateResponse>
 }

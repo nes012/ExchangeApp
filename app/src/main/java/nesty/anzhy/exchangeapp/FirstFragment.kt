@@ -129,8 +129,8 @@ class FirstFragment : Fragment() {
     //in this method we will check if 10 min past from the previous data.
     private fun checkIfTenMinutesPastToRetrieveNewData(timestamp: Long) {
         val minutesDiff = differenceInMinutesBetweenTwoDateTime(timestamp)
-        Log.e("minutesDiff", "$minutesDiff min last from previous data")
-        if (minutesDiff >= 30) {
+        Log.d("minutesDiff", "$minutesDiff min last from previous data")
+        if (minutesDiff >= 10) {
             requestApiData()
         } else {
             Toast.makeText(

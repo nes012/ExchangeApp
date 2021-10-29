@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import nesty.anzhy.exchangeapp.R
 import nesty.anzhy.exchangeapp.databinding.CurrencyItemLayoutBinding
 import nesty.anzhy.exchangeapp.models.Currency
+import nesty.anzhy.exchangeapp.utils.ExchangeRateDiffUtil
 import java.math.BigDecimal
 import java.math.RoundingMode
 
@@ -29,7 +31,7 @@ class CurrencyAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val data = data[position]
-        holder.binding.txtLatestExchangeRate.text = BigDecimal(data.value).setScale(2, RoundingMode.HALF_EVEN).toString()
+        holder.binding.txtLatestExchangeRate.text = BigDecimal(data.value).setScale(2, RoundingMode.UP).toString()
         holder.binding.txtCurrencyName.text = data.name
 
         holder.itemView.setOnClickListener {
@@ -43,8 +45,10 @@ class CurrencyAdapter(
     override fun getItemCount(): Int = data.size
 
     fun setData(newData: ArrayList<Currency>) {
+        val exchangeDiffUtil = ExchangeRateDiffUtil(data, newData)
+        val diffUtilResult = DiffUtil.calculateDiff(exchangeDiffUtil)
         this.data = newData
-        notifyDataSetChanged()
+        diffUtilResult.dispatchUpdatesTo(this)
     }
 }
 
