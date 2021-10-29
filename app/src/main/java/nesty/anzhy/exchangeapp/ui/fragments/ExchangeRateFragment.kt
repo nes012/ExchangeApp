@@ -37,7 +37,6 @@ class ExchangeRateFragment : Fragment() {
 
     var mLastDataRetrievalTimestamp: Long = 0L
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -59,7 +58,6 @@ class ExchangeRateFragment : Fragment() {
 
         binding.fabRefreshData.setOnClickListener {
             val minutesDiff = differenceInMinutesBetweenTwoDateTime(mLastDataRetrievalTimestamp)
-
             if (minutesDiff >= REFRESH_INTERVAL_MINUTES) {
                 requestApiData()
             } else {
