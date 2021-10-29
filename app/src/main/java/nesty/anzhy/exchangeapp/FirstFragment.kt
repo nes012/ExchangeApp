@@ -21,6 +21,8 @@ import nesty.anzhy.exchangeapp.utils.*
 import nesty.anzhy.exchangeapp.utils.Constants.Companion.APIKEY
 import nesty.anzhy.exchangeapp.utils.Constants.Companion.API_KEY
 import nesty.anzhy.exchangeapp.viewmodel.MainViewModel
+import java.util.*
+import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class FirstFragment : Fragment() {
@@ -30,7 +32,7 @@ class FirstFragment : Fragment() {
     private lateinit var networkListener: NetworkListener
 
     private lateinit var mainViewModel: MainViewModel
-    private val mAdapter: CurrencyAdapter by lazy { CurrencyAdapter() }
+    private val mAdapter: CurrencyAdapter by lazy { CurrencyAdapter(this@FirstFragment) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +53,7 @@ class FirstFragment : Fragment() {
                 }
         }
 
-        binding.fabRefreshData.setOnClickListener{
+        binding.fabRefreshData.setOnClickListener {
             readDatabase()
         }
 
@@ -68,6 +70,7 @@ class FirstFragment : Fragment() {
                     response.data?.let {
                         val data = response.data
                         Log.e("ApiRequestSuccess", data.toString())
+                        binding.txtLastUpdate.text = "Last update: "
                         binding.txtTime.text =
                             convertTimestampToTime(data.query?.timestamp?.toLong())
                         val map = it.currency!!
@@ -103,6 +106,7 @@ class FirstFragment : Fragment() {
             val currency = Currency(k, v)
             list.add(currency)
         }
+        list.sort()
         mAdapter.setData(list)
     }
 
@@ -124,10 +128,16 @@ class FirstFragment : Fragment() {
 
     //in this method we will check if 10 min past from the previous data.
     private fun checkIfTenMinutesPastToRetrieveNewData(timestamp: Long) {
-        val minutesDiff = differenceInDaysBetweenTwoDateTime(timestamp)
+        val minutesDiff = differenceInMinutesBetweenTwoDateTime(timestamp)
         Log.e("minutesDiff", "$minutesDiff min last from previous data")
-        if (minutesDiff >= 10) {
+        if (minutesDiff >= 30) {
             requestApiData()
+        } else {
+            Toast.makeText(
+                requireContext(),
+                "there are no new data to show",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

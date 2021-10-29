@@ -11,6 +11,8 @@ class Constants {
 
         //API query keys
         const val APIKEY = "apikey"
-
+        const val DATE_FROM = "date_from"
+        const val DATE_TO = "date_to"
+        const val BASE_CURRENCY = "base_currency"
     }
 }

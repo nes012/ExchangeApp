@@ -7,4 +7,8 @@ import kotlinx.parcelize.Parcelize
 data class Currency(
     val name: String,
     val value:Double
-) : Parcelable
+) : Parcelable, Comparable<Currency> {
+    override fun compareTo(other: Currency): Int {
+        return this.name.compareTo(other.name)
+    }
+}

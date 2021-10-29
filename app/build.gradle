@@ -94,7 +94,10 @@ dependencies {
     //Joda time
     implementation 'joda-time:joda-time:2.10.9'
 
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
 }
+
 kapt {
     correctErrorTypes true
 }

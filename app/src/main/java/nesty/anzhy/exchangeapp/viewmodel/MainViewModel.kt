@@ -1,9 +1,9 @@
 package nesty.anzhy.exchangeapp.viewmodel
-
 import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import nesty.anzhy.exchangeapp.data.Repository
 import nesty.anzhy.exchangeapp.data.database.entities.ExchangeEntity
+import nesty.anzhy.exchangeapp.models.DateResponse
 import nesty.anzhy.exchangeapp.models.ExchangeResponse
 import nesty.anzhy.exchangeapp.models.Query
 import nesty.anzhy.exchangeapp.utils.NetworkResult
@@ -27,7 +28,6 @@ class MainViewModel @Inject constructor(
 
     /**RETROFIT */
     val exchangeResponse: MutableLiveData<NetworkResult<ExchangeResponse>> = MutableLiveData()
-
     fun getExchangeRate(queries: Map<String, String>) = viewModelScope.launch {
         getExchangeSafeCall(queries)
     }
@@ -50,6 +50,37 @@ class MainViewModel @Inject constructor(
             }
         } else {
             exchangeResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
+    }
+
+    val exchangeHistoricalResponse: MutableLiveData<NetworkResult<DateResponse>> = MutableLiveData()
+    fun getHistoricalRate(queries: Map<String, String>) = viewModelScope.launch {
+        getExchangeHistoricalSafeCall(queries)
+    }
+    private suspend fun getExchangeHistoricalSafeCall(queries: Map<String, String>) {
+        exchangeHistoricalResponse.value = NetworkResult.Loading()
+        if (hasInternetConnection()) {
+            try {
+                val data = repository.remote.getHistoricalRates(queries)
+                exchangeHistoricalResponse.value = handleExchangeHistoricalRateResponse(data)
+                // val exchangeHistoricalResponse = exchangeHistoricalResponse.value!!.data
+            } catch (e: Exception) {
+                exchangeHistoricalResponse.value = NetworkResult.Error("History not found.")
+            }
+        } else {
+            exchangeHistoricalResponse.value = NetworkResult.Error("No Internet Connection.")
+        }
+    }
+
+    private fun handleExchangeHistoricalRateResponse(response: Response<DateResponse>): NetworkResult<DateResponse> {
+        return when {
+            response.isSuccessful -> {
+                val data = response.body()
+                NetworkResult.Success(data!!)
+            }
+            else -> {
+                NetworkResult.Error(response.message())
+            }
         }
     }
 
